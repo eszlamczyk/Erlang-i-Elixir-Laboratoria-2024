@@ -21,7 +21,7 @@ qs([A]) -> [A];
 qs([Pivot|Tail]) -> qs(less_than(Tail,Pivot)) ++ [Pivot]
                           ++ qs(grt_eq_than(Tail,Pivot)).
 
-random_elems(N,Min,Max) -> [random:uniform(Max)+Min || _X <-lists:seq(1,N)].
+random_elems(N,Min,Max) -> [rand:uniform(Max)+Min || _X <-lists:seq(1,N)].
 
 compare_speeds(List,Fun1,Fun2) ->
   {T1,_A} = timer:tc(Fun1,[List]),
