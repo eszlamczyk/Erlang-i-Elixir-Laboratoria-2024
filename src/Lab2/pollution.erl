@@ -11,7 +11,7 @@
 
 %% API
 -export([create_monitor/0, add_station/3, add_value/5, remove_value/4, get_one_value/4,
-  get_station_mean/3, get_daily_mean/3,station_exists/2,filter_by_date_and_type/3,get_maximum_gradient_station/2]).
+  get_station_mean/3, get_daily_mean/3,get_maximum_gradient_station/2]).
 
 -record(station, {name,geolocation}).
 -record(reading, {station,date,type,value}).
@@ -104,7 +104,7 @@ get_one_value(NameOrGeolocation, Date, Type, Monitor) ->
     [Station | _T] ->
       case reading_exists_S_D_T(Monitor#monitor.readings, Station, Date, Type) of
         [ ] ->
-          {error, "no reading to remove found"};
+          {error, "no reading to get found"};
         [Reading | _] ->
           Reading#reading.value
       end

@@ -1,0 +1,4 @@
+  cd('src/Lab2'),
+  c(pollution),
+  cd('../Lab3'),
+  c(pollution_server).

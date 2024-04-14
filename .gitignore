@@ -2,3 +2,4 @@
 out
 ErlangLaboratoria.iml
 test.beam
+*.beam
