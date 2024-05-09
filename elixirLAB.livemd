@@ -1,0 +1,115 @@
+# Untitled notebook
+
+## Section
+
+```elixir
+defmodule PollutionDataLoader do
+  defp parseline(line) do
+    [dateTime, pollutionType, pollutionLevel, stationID, stationName, location] =
+      String.split(line, ";")
+
+    location =
+      location |> String.split(",") |> Enum.map(fn x -> String.to_float(x) end) |> List.to_tuple()
+
+    stationID = String.to_integer(stationID)
+    pollutionLevel = String.to_float(pollutionLevel)
+
+    date =
+      String.slice(dateTime, 0..9)
+      |> String.split("-")
+      |> Enum.map(fn x -> String.to_integer(x) end)
+      |> List.to_tuple()
+
+    time =
+      String.slice(dateTime, 11..18)
+      |> String.split(":")
+      |> Enum.map(fn x -> String.to_integer(x) end)
+      |> List.to_tuple()
+
+    %{
+      :datetime => {date, time},
+      :location => location,
+      :stationID => stationID,
+      :stationName => stationName,
+      :pollutionType => pollutionType,
+      :pollutionLevel => pollutionLevel
+    }
+  end
+
+  defp identifyStations(listOfMaps) do
+    stations = Enum.uniq_by(listOfMaps, fn x -> x[:location] end)
+    Enum.map(stations, fn x -> {"#{x.stationID} #{x.stationName}", x.location} end)
+  end
+
+  def loadFullData(dataPath, serverPath) do
+    # getData
+    # path
+    fData =
+      File.read!(dataPath)
+      |> String.split("\n")
+      |> Enum.filter(fn x -> x != "" end)
+      |> Enum.map(fn x -> parseline(x) end)
+
+    # getStations
+    stations = identifyStations(fData)
+    # createServer
+    Code.append_path(serverPath)
+    # for restarting
+    Application.stop(:mylib)
+    Application.start(:mylib)
+    # setStations
+    Enum.map(stations, fn {a, b} -> :pollution_gen_server.addStation(a, b) end)
+    # setData
+    Enum.map(fData, fn x ->
+      :pollution_gen_server.addValue(x.location, x.datetime, x.pollutionType, x.pollutionLevel)
+    end)
+
+    :dataLoaded
+  end
+
+  def loadDataType(dataPath, serverPath, dataType) do
+    # getData
+    # path
+    fData =
+      File.read!(dataPath)
+      |> String.split("\n")
+      |> Enum.filter(fn x -> x != "" end)
+      |> Enum.map(fn x -> parseline(x) end)
+
+    # getStations
+    stations = identifyStations(fData)
+    # createServer
+    Code.append_path(serverPath)
+    # for restarting
+    Application.stop(:mylib)
+    Application.start(:mylib)
+    # setStations
+    Enum.map(stations, fn {a, b} -> :pollution_gen_server.addStation(a, b) end)
+    # setData
+    Enum.filter(fData, fn x -> x.pollutionType == dataType end)
+    |> Enum.map(fn x ->
+      :pollution_gen_server.addValue(x.location, x.datetime, x.pollutionType, x.pollutionLevel)
+    end)
+
+    :dataLoaded
+  end
+end
+```
+
+```elixir
+PollutionDataLoader.loadDataType(
+  "E:/studia/elixirLAB/data.csv",
+  "E:/studia/ErlangLab/lab4/mylib/_build/default/lib/mylib/ebin",
+  "PM10"
+)
+```
+
+```elixir
+fn -> :pollution_gen_server.getStationMean("9910 Polska, Kraków, Studencka", "PM10") end
+|> :timer.tc()
+```
+
+```elixir
+fn -> :pollution_gen_server.getDailyMean("PM25", {2024, 2, 10}) end
+|> :timer.tc()
+```
