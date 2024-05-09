@@ -67,12 +67,9 @@ get_max_value([],_,Max) -> Max.
 create_monitor() -> #monitor{}.
 
 add_station(Name, Geolocation,Monitor) ->
-  case station_exists(Monitor#monitor.stations,Name) of
-    [] -> case station_exists(Monitor#monitor.stations,Geolocation) of
-               [] -> Monitor#monitor{stations = [#station{name = Name, geolocation = Geolocation}|Monitor#monitor.stations]};
-               _ -> {error, "Station already exists!"}
-             end;
-    _ -> {error, "Station already exists!"}
+  case station_exists(Monitor#monitor.stations,Geolocation) of
+    [] -> Monitor#monitor{stations = [#station{name = Name, geolocation = Geolocation}|Monitor#monitor.stations]};
+    _ -> {error, {"Station already exists!", Name,Geolocation}}
   end.
 
 add_value(NameOrGeolocation,Date,Type,Value,Monitor) ->

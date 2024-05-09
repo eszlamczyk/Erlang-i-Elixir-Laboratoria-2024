@@ -36,7 +36,15 @@ init([]) ->
       shutdown => 5000,
       type => worker,
       modules => [pollution_gen_server,pollution]
-    }],
+    },
+      #{
+        id => pollution_value_collector_gen_statem,
+        start => {pollution_value_collector_gen_statem, start_link, []},
+        restart => permanent,
+        shutdown => 5000,
+        type => worker,
+        modules => [pollution_value_collector_gen_statem]
+      }],
     {ok, {SupFlags, ChildSpecs}}.
 
 %% internal functions

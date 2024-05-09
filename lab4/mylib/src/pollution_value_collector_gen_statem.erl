@@ -35,7 +35,7 @@ set_station(NameOrGeolocation) ->
   io:format("Funny number: 69 ~n"),
   gen_statem:cast(?SERVER, {set_station, NameOrGeolocation}).
 add_value(Date, Type, Value) -> gen_statem:cast(?SERVER, {add_value, Date, Type, Value}).
-store_data() -> gen_statem:cast(?SERVER, store_data ).
+store_data() -> gen_statem:cast(?SERVER, {store_data} ).
 
 
 %%%===================================================================
@@ -52,7 +52,7 @@ adder(_Event, {add_value, Date,Type,Value},[NameOrGeolocation|Rest]) ->
   io:format("DEBUG: adder add ~p~n", [Value]),
   NewRest =  [{Date,Type,Value}] ++ Rest,
   {next_state, adder, [NameOrGeolocation|NewRest]};
-adder(_Event, store_data,[NameOrGeolocation|Data]) ->
+adder(_Event, {store_data},[NameOrGeolocation|Data]) ->
   add_values(NameOrGeolocation, Data).
 
 
