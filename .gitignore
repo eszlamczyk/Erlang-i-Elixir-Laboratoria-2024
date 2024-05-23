@@ -3,3 +3,32 @@ out
 ErlangLaboratoria.iml
 test.beam
 *.beam
+
+# The directory Mix will write compiled artifacts to.
+pollutiondb/_build/
+
+# If you run "mix test --cover", coverage assets end up here.
+pollutiondb/cover/
+
+# The directory Mix downloads your dependencies sources to.
+pollutiondb/deps/
+
+# Where third-party dependencies like ExDoc output generated docs.
+pollutiondb/doc/
+
+# Ignore .fetch files in case you like to edit your project deps locally.
+pollutiondb/.fetch
+
+# If the VM crashes, it generates a dump, let's ignore it too.
+pollutiondb/erl_crash.dump
+
+# Also ignore archive artifacts (built via "mix archive.build").
+pollutiondb/*.ez
+
+# Ignore package tarball (built via "mix hex.build").
+pollutiondb/pollutiondb-*.tar
+
+# Temporary files, for example, from tests.
+pollutiondb/tmp/
+
+pollutiondb/.idea
